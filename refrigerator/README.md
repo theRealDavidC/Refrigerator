@@ -9,7 +9,7 @@
 | Buzzer        | PA3      | Active-high; add 100 Ω series resistor |
 | OLED SDA      | PB7      | I2C1, 4.7 kΩ pull-up to 3.3 V         |
 | OLED SCL      | PB6      | I2C1, 4.7 kΩ pull-up to 3.3 V         |
-| ESP32 TX→RX   | PA3 (RX) | Future expansion — share via jumper    |
+| ESP32 TX→RX   | PA3 (RX) | Future expansion share via jumper    |
 | ESP32 RX←TX   | PA2 (TX) | Future expansion                       |
 
 > DS18B20 VDD must go to 3.3 V, not 5 V, when powered from the STM32.
@@ -131,7 +131,7 @@ openocd -f interface/stlink.cfg \
 - OLED should show `!! TEMP HIGH !!`
 - Buzzer should start slow double-beep pattern
 
-### Step 6 — Defrost cycle (accelerated test)
+### Step 6: Defrost cycle (accelerated test)
 - Temporarily change `DEFROST_INTERVAL_SEC` to `60` and rebuild
 - After 60 seconds uptime the mode should switch to `DEFROST`
 - Buzzer gives one short beep at defrost start
