@@ -1,4 +1,4 @@
-# Mini Refrigerator Controller — STM32F103
+# Mini Refrigerator Controller STM32F103
 
 ## Hardware
 
@@ -14,7 +14,6 @@
 
 > DS18B20 VDD must go to 3.3 V, not 5 V, when powered from the STM32.
 
----
 
 ## Project Setup in STM32CubeIDE
 
@@ -31,12 +30,12 @@
 
 **Clock tree**
 - PLL Source: HSE
-- PLLMUL: ×9 → SYSCLK = 72 MHz
+- PLLMUL: ×9 -> SYSCLK = 72 MHz
 - APB1 Prescaler: /2
 
 **TIM2**
 - Mode: Internal Clock
-- Prescaler: `71` (72 MHz / (71+1) = 1 MHz → 1 µs per tick)
+- Prescaler: `71` (72 MHz / (71+1) = 1 MHz -> 1 µs per tick)
 - Period: `65535`
 - No interrupt needed
 
@@ -54,7 +53,7 @@
 - PA1: GPIO_Input (1-Wire is driven manually in ds18b20.c)
 - PA2: GPIO_Output (SSR)
 - PA3: GPIO_Output (Buzzer)
-- PC13: GPIO_Output (onboard LED — error indicator)
+- PC13: GPIO_Output (onboard LED error indicator)
 
 ### 3. Copy source files
 
@@ -104,30 +103,30 @@ openocd -f interface/stlink.cfg \
 
 ## Testing on the bench (before installing in fridge)
 
-### Step 1 — Power-on check
+### Step 1: Power-on check
 - Connect ST-Link and open a serial terminal at 115200 baud on USART2
-- Power on — the OLED should show `FRIDGE CONTROLLER` and `Status: OK`
+- Power on the OLED should show `FRIDGE CONTROLLER` and `Status: OK`
 - Confirm the SSR GPIO (PA2) reads LOW (compressor off)
 
-### Step 2 — Sensor check
+### Step 2: Sensor check
 - Plug DS18B20 with 4.7 kΩ pull-up
 - Confirm the temperature reading on OLED matches a reference thermometer
 - Pull the DS18B20 data line to GND to simulate a fault:
   - OLED should show `!! SENSOR FAULT !!`
   - Buzzer should sound fast pattern within 3 consecutive failed reads
-  - SSR must be OFF during fault — confirm with multimeter on PA2
+  - SSR must be OFF during fault confirm with multimeter on PA2
 
-### Step 3 — Cooling trigger
+### Step 3: Cooling trigger
 - Warm the DS18B20 with your fingers above 5°C (target 4 + hysteresis 1)
-- SSR GPIO (PA2) should go HIGH — confirm with LED or multimeter
-- Cool the sensor below 3°C — SSR should go LOW after MIN_ON_SEC (60 s)
+- SSR GPIO (PA2) should go HIGH confirm with LED or multimeter
+- Cool the sensor below 3°C SSR should go LOW after MIN_ON_SEC (60 s)
 
-### Step 4 — Short-cycle protection
+### Step 4: Short-cycle protection
 - While compressor is OFF, immediately request cooling again
 - Confirm that SSR stays LOW for 180 seconds (COMPRESSOR_MIN_OFF_SEC)
 - OLED mode will show `COOLING` but SSR will only fire after lockout expires
 
-### Step 5 — High temperature alarm
+### Step 5: High temperature alarm
 - Heat sensor above 12°C (FRIDGE_TEMP_HIGH_ALARM_C) and hold for 30 seconds
 - OLED should show `!! TEMP HIGH !!`
 - Buzzer should start slow double-beep pattern
@@ -171,7 +170,7 @@ When you are ready to add remote monitoring / Wi-Fi:
    {"temp":4.2,"mode":"COOLING","alarm":0,"uptime":3600}
    ```
 3. The ESP32 parses the frame and publishes to MQTT or an HTTP endpoint
-4. No changes needed to any other module — UART2 is already initialised
+4. No changes needed to any other module UART2 is already initialised
    and reserved in `main.c`
 
 ---
@@ -180,7 +179,7 @@ When you are ready to add remote monitoring / Wi-Fi:
 
 | File             | Responsibility                                      |
 |------------------|-----------------------------------------------------|
-| config.h         | All constants and pin assignments — edit here only  |
+| config.h         | All constants and pin assignments edit here only  |
 | ds18b20.c        | 1-Wire read, CRC verify, temperature decode         |
 | ssr.c            | SSR GPIO on/off                                     |
 | compressor.c     | Short-cycle protection, ON/OFF state tracking       |
@@ -188,5 +187,5 @@ When you are ready to add remote monitoring / Wi-Fi:
 | ssd1306.c        | Raw I2C framebuffer driver                          |
 | display.c        | OLED screen layout                                  |
 | alarm.c          | Alarm flag management, buzzer coordination          |
-| fridge.c         | Central state machine — sensor → decision → output  |
+| fridge.c         | Central state machine sensor → decision → output  |
 | main.c           | HAL init, peripheral config, main loop              |
